@@ -1,0 +1,30 @@
+package ru.spbau.mit.java.paradov.commands.command_impl
+
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
+import org.junit.Test
+
+import org.junit.Assert.*
+import ru.spbau.mit.java.paradov.shell.Shell
+import java.io.BufferedOutputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.PrintStream
+import java.lang.StringBuilder
+
+class CommandProcessTest {
+    private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
+
+    @Test
+    fun testProcess() {
+        val shell = mockk<Shell>()
+        val filename = resDir + "doc4"
+
+        val outputStream = ByteArrayOutputStream()
+        every { shell.outputStream } returns outputStream
+        every { shell.scope.currentDirectory} returns System.getProperty("user.dir")
+        CommandProcess("sort", listOf(filename), shell).run()
+        assertEquals("aaaa\nbbbb\ncccc\n", outputStream.toString())
+    }
+}
