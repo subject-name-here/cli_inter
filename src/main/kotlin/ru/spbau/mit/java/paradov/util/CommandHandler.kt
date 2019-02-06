@@ -11,7 +11,6 @@ import ru.spbau.mit.java.paradov.shell.Shell
  */
 fun tokensToStringList(scope: Scope, tokens: List<Token>): List<String> {
     val commandAndArguments = ArrayList<String>()
-    // Terrible crunch because I didn't invented good way to handle assignment.
     for (token in tokens) {
         when (token.type) {
             PipelineParser.VariableLike -> commandAndArguments.add(substitute(scope, token.text))

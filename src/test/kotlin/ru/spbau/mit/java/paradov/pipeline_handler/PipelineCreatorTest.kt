@@ -52,7 +52,7 @@ class PipelineCreatorTest {
         val s = listOf(s1, s2).joinToString("|")
         val pipeline = stringToPipeline(s)
         assertTrue(pipeline is PipelineMultipleCommand)
-        val actual = CommandCollectionToStringListList((pipeline as PipelineMultipleCommand).tokensCollection)
+        val actual = commandCollectionToStringListList((pipeline as PipelineMultipleCommand).tokensCollection)
         assertEquals(listOf(listOf(s1), listOf(s2)), actual)
     }
 
@@ -65,11 +65,11 @@ class PipelineCreatorTest {
         val s = listOf("$s11 $s12", "$s21   ", s31).joinToString("|")
         val pipeline = stringToPipeline(s)
         assertTrue(pipeline is PipelineMultipleCommand)
-        val actual = CommandCollectionToStringListList((pipeline as PipelineMultipleCommand).tokensCollection)
+        val actual = commandCollectionToStringListList((pipeline as PipelineMultipleCommand).tokensCollection)
         assertEquals(listOf(listOf(s11, s12), listOf(s21), listOf(s31)), actual)
     }
 
     private fun tokenListToStringList(l: List<Token>) = l.map { it.text }
 
-    private fun CommandCollectionToStringListList(p: CommandCollection) = p.map { tokenListToStringList(it) }
+    private fun commandCollectionToStringListList(p: CommandCollection) = p.map { tokenListToStringList(it) }
 }
