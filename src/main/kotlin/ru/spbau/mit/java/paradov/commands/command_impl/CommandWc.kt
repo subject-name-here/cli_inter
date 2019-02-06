@@ -39,7 +39,7 @@ class CommandWc(args: List<String>, shell: Shell) : Command(args, shell) {
                     lines += fileLines
                     bytes += fileBytes
                 } catch (e: FileNotFoundException) {
-                    shell.println("File $arg not found!")
+                    shell.println("wc: file $arg not found")
                 }
             }
             if (args.size > 1)

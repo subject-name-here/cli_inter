@@ -58,7 +58,7 @@ class CommandWcTest {
         val filename = resDir + "what doc"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandWc(listOf(filename), shell).run()
-        val expected = "File $filename not found!\n"
+        val expected = "wc: file $filename not found\n"
         assertEquals(expected, sb.toString())
     }
 }

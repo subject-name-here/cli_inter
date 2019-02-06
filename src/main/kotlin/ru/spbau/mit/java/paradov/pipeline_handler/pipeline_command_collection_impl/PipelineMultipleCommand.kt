@@ -26,6 +26,6 @@ class PipelineMultipleCommand(val tokensCollection: CommandCollection) : Pipelin
             inputStream = ByteArrayInputStream(outputStream.toByteArray())
         }
 
-        shell.outputStream.write(outputStream.toByteArray())
+        shell.print(outputStream.toString())
     }
 }
