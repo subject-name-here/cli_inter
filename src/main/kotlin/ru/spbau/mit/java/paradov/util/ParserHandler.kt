@@ -33,7 +33,7 @@ fun stringToCommandCollection(line: String?): CommandCollection {
     expLexer.addErrorListener(PipelineHandlerErrorListener())
     parser.addErrorListener(PipelineHandlerErrorListener())
 
-    val pipelineCommands = parser.pipeline().something()
+    val pipelineCommands = parser.pipeline().command()
     val commandCollection = ArrayList<ArrayList<Token>>()
     val currentCommandCollection = ArrayList<Token>()
 

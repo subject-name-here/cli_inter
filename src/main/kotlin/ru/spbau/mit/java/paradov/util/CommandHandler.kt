@@ -12,15 +12,23 @@ import ru.spbau.mit.java.paradov.shell.Shell
 fun tokensToStringList(scope: Scope, tokens: List<Token>): List<String> {
     val commandAndArguments = ArrayList<String>()
     // Terrible crunch because I didn't invented good way to handle assignment.
-    var isFirst = true
     for (token in tokens) {
         when (token.type) {
-            PipelineParser.AnythingElse -> commandAndArguments.addAll(substitute(scope, token.text).splitBySpaces())
+            PipelineParser.VariableLike -> commandAndArguments.add(substitute(scope, token.text))
             PipelineParser.WeakString -> commandAndArguments.add(substitute(scope, token.text).dropQuotes())
             PipelineParser.StrongString -> commandAndArguments.add(token.text.dropQuotes())
-            PipelineParser.Assignment -> commandAndArguments.add(if (isFirst) "assign ${token.text}" else token.text)
+            PipelineParser.Assignment -> {
+                // This is still bad, but it works slightly better.
+                val operands = token.text.split("=".toRegex(), 2)
+                val left = substitute(scope, operands[0])
+                val right = when {
+                    operands[1][0] == '\'' -> operands[1].dropQuotes()
+                    operands[1][0] == '"' -> substitute(scope, operands[1]).dropQuotes()
+                    else -> substitute(scope, operands[1])
+                }
+                commandAndArguments.add("$left=$right")
+            }
         }
-        isFirst = false
     }
     return commandAndArguments
 }
@@ -37,9 +45,12 @@ fun runCommandAndArguments(shell: Shell, commandAndArguments: List<String>) {
         "wc" -> CommandWc(arguments, shell).run()
         "pwd" -> CommandPwd(arguments, shell).run()
         "exit" -> CommandExit(arguments, shell).run()
-        "assign" -> CommandAssignment(arguments, shell).run()
         else -> {
-            CommandProcess(command, arguments, shell).run()
+            if (command.contains("=")) {
+                CommandAssignment(arguments, shell).run()
+            } else {
+                CommandProcess(command, arguments, shell).run()
+            }
         }
     }
 }

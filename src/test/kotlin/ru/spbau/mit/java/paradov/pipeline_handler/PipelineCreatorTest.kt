@@ -19,18 +19,19 @@ class PipelineCreatorTest {
         val s = "aaaa bbb"
         val pipeline = stringToPipeline(s)
         assertTrue(pipeline is PipelineSingleCommand)
-        assertEquals(tokenListToStringList((pipeline as PipelineSingleCommand).tokens), listOf(s))
+        assertEquals(tokenListToStringList((pipeline as PipelineSingleCommand).tokens), listOf("aaaa", "bbb"))
     }
 
     @Test
     fun testStringToSinglePipeline2() {
-        val s1 = "aaaa bbb"
-        val s2 = "\"oh no it's a p|pe\""
-        val s3 = " hehehe"
-        val s = s1 + s2 + s3
+        val s1 = "aaaa"
+        val s2 = "bbb"
+        val s3 = "\"oh no it's a p|pe\""
+        val s4 = "hehehe"
+        val s = "$s1 $s2$s3 $s4"
         val pipeline = stringToPipeline(s)
         assertTrue(pipeline is PipelineSingleCommand)
-        assertEquals(listOf(s1, s2, s3), tokenListToStringList((pipeline as PipelineSingleCommand).tokens))
+        assertEquals(listOf(s1, s2, s3, s4), tokenListToStringList((pipeline as PipelineSingleCommand).tokens))
     }
 
     @Test
@@ -57,11 +58,11 @@ class PipelineCreatorTest {
 
     @Test
     fun testStringToMultiplePipeline2() {
-        val s11 = "now it will be "
+        val s11 = "nowitwillbe"
         val s12 = "'comp|icated'"
-        val s21 = "haha "
-        val s31 = " other pipe"
-        val s = listOf(s11 + s12, s21, s31).joinToString("|")
+        val s21 = "haha"
+        val s31 = "otherpipe"
+        val s = listOf("$s11 $s12", "$s21   ", s31).joinToString("|")
         val pipeline = stringToPipeline(s)
         assertTrue(pipeline is PipelineMultipleCommand)
         val actual = CommandCollectionToStringListList((pipeline as PipelineMultipleCommand).tokensCollection)

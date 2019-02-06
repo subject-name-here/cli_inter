@@ -1,16 +1,16 @@
 grammar Pipeline;
 
-pipeline : ( something ( Pipe something )* )? EOF;
+pipeline : ( command ( Pipe command )* )? EOF;
 
-something : ( Assignment | WeakString | StrongString | AnythingElse )+ ;
+command : ( Assignment | WeakString | StrongString | VariableLike )+ ;
 
-Assignment : AnythingElse '=' ( WeakString | StrongString | AnythingElse );
+Assignment : VariableLike '=' ( WeakString | StrongString | VariableLike );
 
 WeakString : '"' (.)*? '"' ;
 
 StrongString : '\'' .*? '\'' ;
 
-AnythingElse : ~('|' | '"' | '\'' | '=')+ ;
+VariableLike : ~('|' | '"' | '\'' | '=' | ' ' | '\t' | '\r'| '\n')+ ;
 
 Pipe : '|' ;
 
