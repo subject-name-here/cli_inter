@@ -5,6 +5,7 @@ import ru.spbau.mit.java.paradov.shell.Shell
 import ru.spbau.mit.java.paradov.util.splitBySpaces
 import java.io.File
 import java.io.FileNotFoundException
+import java.util.*
 
 /**
  * Command that counts words, lines and bytes in given file/files.
@@ -14,36 +15,53 @@ class CommandWc(args: List<String>, shell: Shell) : Command(args, shell) {
         const val splitter = "    "
     }
 
+    private class WordCountResult {
+        var bytes: Long = 0
+        var words: Int = 0
+        var lines: Int = 0
+
+        override fun toString(): String {
+            return "$lines $words $bytes"
+        }
+
+        fun add(otherWcResult: WordCountResult) {
+            bytes += otherWcResult.bytes
+            words += otherWcResult.words
+            lines += otherWcResult.lines
+        }
+    }
+
     override fun run() {
         if (args.isEmpty()) {
-            // This part is mostly useless unless I'll figure out how to read from stdin after EOF.
-            // throw Exception("wc: expected file as argument!")
-            shell.println("0 0 0")
+            val scanner = Scanner(shell.inputStream)
+            val wcResult = WordCountResult()
+            while (scanner.hasNext()) {
+                val line = scanner.nextLine()
+                wcResult.lines += 1
+                wcResult.words += line.splitBySpaces().size
+                wcResult.bytes += line.length
+            }
+            shell.println("$wcResult")
         } else {
-            var words = 0
-            var lines = 0
-            var bytes: Long = 0
+            val wcTotal = WordCountResult()
             for (arg in args) {
                 try {
                     val f = File(arg)
-                    val fileBytes = f.length()
-                    var fileLines = 0
-                    var fileWords = 0
+                    val wcLocal = WordCountResult()
+                    wcLocal.bytes = f.length()
                     f.forEachLine {
-                        fileLines += 1
-                        fileWords += it.splitBySpaces().size
+                        wcLocal.lines += 1
+                        wcLocal.words += it.splitBySpaces().size
                     }
 
-                    shell.println("$fileLines $fileWords $fileBytes$splitter$arg")
-                    words += fileWords
-                    lines += fileLines
-                    bytes += fileBytes
+                    shell.println("$wcLocal$splitter$arg")
+                    wcTotal.add(wcLocal)
                 } catch (e: FileNotFoundException) {
                     shell.println("wc: file $arg not found")
                 }
             }
             if (args.size > 1)
-                shell.println("Total: $lines $words $bytes")
+                shell.println("Total: $wcTotal")
         }
     }
 }
