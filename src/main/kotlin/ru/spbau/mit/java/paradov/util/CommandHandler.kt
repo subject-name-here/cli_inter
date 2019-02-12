@@ -43,6 +43,7 @@ fun runCommandAndArguments(shell: Shell, commandAndArguments: List<String>) {
         "cat" -> CommandCat(arguments, shell).run()
         "wc" -> CommandWc(arguments, shell).run()
         "pwd" -> CommandPwd(arguments, shell).run()
+        "grep" -> CommandGrep(arguments, shell).run()
         "exit" -> CommandExit(arguments, shell).run()
         else -> {
             if (command.contains("=")) {
