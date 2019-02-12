@@ -10,6 +10,7 @@ import com.beust.jcommander.validators.PositiveInteger
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
+import kotlin.collections.HashSet
 
 
 /**
@@ -52,10 +53,15 @@ class CommandGrep(args: List<String>, shell: Shell) : Command(args, shell) {
             for (file in files) {
                 try {
                     File(file).forEachLine {
-                        currentContextLength = acceptLine(it, regex, currentContextLength, argsParsed.afterContext, file)
+                        currentContextLength = acceptLine(
+                            it,
+                            regex,
+                            currentContextLength,
+                            argsParsed.afterContext,
+                            if (files.size == 1) "" else file)
                     }
                 } catch (e: FileNotFoundException) {
-                    shell.println("cat: file $file not found")
+                    shell.println("grep: file $file not found")
                 }
                 currentContextLength = -1
             }
@@ -72,13 +78,13 @@ class CommandGrep(args: List<String>, shell: Shell) : Command(args, shell) {
         val res = regex.find(line)
         return if (res == null) {
             if (currentContextLength > 0) {
-                shell.println("$prefix - $line")
-            } else if (currentContextLength == 0) {
+                shell.println("${if (prefix.isEmpty()) "" else "$prefix - " }$line")
+            } else if (currentContextLength == 0 && maxContextLength != 0) {
                 shell.println("---")
             }
             currentContextLength - 1
         } else {
-            shell.println("$prefix : $line")
+            shell.println("${if (prefix.isEmpty()) "" else "$prefix : " }$line")
             maxContextLength
         }
     }
@@ -89,9 +95,9 @@ class CommandGrep(args: List<String>, shell: Shell) : Command(args, shell) {
             regexString = "(?<=^|\\s)$regexString(?=$|\\s+)"
         }
 
-        val regexOptions = emptySet<RegexOption>()
+        val regexOptions = HashSet<RegexOption>()
         if (argsParsed.caseInsensitive) {
-            regexOptions.plusElement(RegexOption.IGNORE_CASE)
+            regexOptions.add(RegexOption.IGNORE_CASE)
         }
 
         return regexString.toRegex(regexOptions)
