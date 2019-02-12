@@ -13,12 +13,10 @@ import java.util.*
 class CommandCat(args: List<String>, shell: Shell) : Command(args, shell) {
     override fun run() {
         if (args.isEmpty()) {
-            // This part is mostly useless unless I'll figure out how to read from stdin after EOF.
-            /*val scanner = Scanner(shell.inputStream)
+            val scanner = Scanner(shell.inputStream)
             while (scanner.hasNext()) {
                 shell.println(scanner.nextLine())
-            }*/
-            throw Exception("cat: expected file as argument!")
+            }
         } else for (arg in args) {
             try {
                 File(arg).forEachLine { shell.println(it) }
