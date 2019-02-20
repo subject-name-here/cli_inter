@@ -45,6 +45,6 @@ abstract class Shell {
         if (!dir.isAbsolute) {
             dir = scope.currentDirectory.resolve(dir)
         }
-        return dir
+        return dir.normalize()
     }
 }
