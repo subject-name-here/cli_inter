@@ -3,6 +3,7 @@ package ru.spbau.mit.java.paradov.commands.command_impl
 import ru.spbau.mit.java.paradov.commands.Command
 import ru.spbau.mit.java.paradov.shell.Shell
 import java.io.File
+import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 
 /**
@@ -11,7 +12,7 @@ import java.util.concurrent.TimeUnit
 class CommandProcess(private val command: String, args: List<String>, shell: Shell) : Command(args, shell) {
     override fun run() {
         val pb = ProcessBuilder(listOf(command) + args)
-        pb.directory(File(shell.scope.currentDirectory))
+        pb.directory(shell.scope.currentDirectory.toFile())
         pb.redirectOutput(ProcessBuilder.Redirect.PIPE)
         pb.redirectInput(ProcessBuilder.Redirect.PIPE)
 

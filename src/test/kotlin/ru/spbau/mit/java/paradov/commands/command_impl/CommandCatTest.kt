@@ -12,6 +12,7 @@ import java.lang.StringBuilder
 
 class CommandCatTest {
     private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
+    private val nl = System.lineSeparator()
 
     @Test
     fun testCat1() {
@@ -21,7 +22,7 @@ class CommandCatTest {
         val filename = resDir + "doc1"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandCat(listOf(filename), shell).run()
-        assertEquals("abcdef\n", sb.toString())
+        assertEquals("abcdef$nl", sb.toString())
     }
 
     @Test
@@ -32,7 +33,7 @@ class CommandCatTest {
         val filename = resDir + "doc2"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandCat(listOf(filename), shell).run()
-        assertEquals("Great Grey Wolf Jumped Over Lazy Bachelor\nQuack!\n", sb.toString())
+        assertEquals("Great Grey Wolf Jumped Over Lazy Bachelor${nl}Quack!$nl", sb.toString())
     }
 
     @Test
@@ -44,7 +45,7 @@ class CommandCatTest {
         val filename2 = resDir + "doc1"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandCat(listOf(filename1, filename2), shell).run()
-        assertEquals("Great Grey Wolf Jumped Over Lazy Bachelor\nQuack!\nabcdef\n", sb.toString())
+        assertEquals("Great Grey Wolf Jumped Over Lazy Bachelor${nl}Quack!${nl}abcdef$nl", sb.toString())
     }
 
     @Test
@@ -55,7 +56,7 @@ class CommandCatTest {
         val filename = resDir + "what doc"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandCat(listOf(filename), shell).run()
-        val expected = "cat: file $filename not found\n"
+        val expected = "cat: file $filename not found$nl"
         assertEquals(expected, sb.toString())
     }
 }
