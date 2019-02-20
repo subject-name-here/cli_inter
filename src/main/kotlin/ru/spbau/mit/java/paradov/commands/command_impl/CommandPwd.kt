@@ -8,6 +8,6 @@ import ru.spbau.mit.java.paradov.shell.Shell
  */
 class CommandPwd(args: List<String>, shell: Shell) : Command(args, shell) {
     override fun run() {
-        shell.println(shell.scope.currentDirectory)
+        shell.println(shell.scope.currentDirectory.toAbsolutePath().toString())
     }
 }

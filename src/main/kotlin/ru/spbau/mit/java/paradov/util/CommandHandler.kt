@@ -44,6 +44,8 @@ fun runCommandAndArguments(shell: Shell, commandAndArguments: List<String>) {
         "wc" -> CommandWc(arguments, shell).run()
         "pwd" -> CommandPwd(arguments, shell).run()
         "grep" -> CommandGrep(arguments, shell).run()
+        "ls" -> CommandLs(arguments, shell).run()
+        "cd" -> CommandCd(arguments, shell).run()
         "exit" -> CommandExit(arguments, shell).run()
         else -> {
             if (command.contains("=")) {

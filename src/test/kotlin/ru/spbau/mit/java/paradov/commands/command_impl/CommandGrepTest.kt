@@ -10,6 +10,8 @@ import ru.spbau.mit.java.paradov.shell.Shell
 import java.io.File
 import java.lang.StringBuilder
 
+private fun String.trimMarginUni() = this.trimMargin().replace("\n", System.lineSeparator())
+
 class CommandGrepTest {
 
     private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
@@ -19,13 +21,14 @@ class CommandGrepTest {
         val shell = mockk<Shell>()
         val sb = StringBuilder()
         val slot = slot<String>()
-        val filename = resDir + "doc6"
+        val filename = resDir + "doc5"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandGrep(listOf("qq", filename), shell).run()
-        assertEquals("there's qq\n" +
-                "another qq\n" +
-                "qq\n" +
-                "last qq\n", sb.toString())
+        assertEquals("""|there's qq
+                        |another qq
+                        |qq
+                        |last qq
+                        |""".trimMarginUni(), sb.toString())
     }
 
     @Test
@@ -36,9 +39,10 @@ class CommandGrepTest {
         val filename = resDir + "doc6"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandGrep(listOf("frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "froggygy\n", sb.toString())
+        assertEquals("""|I've found frog
+                        |it's name froggy
+                        |froggygy
+                        |""".trimMarginUni(), sb.toString())
     }
 
     @Test
@@ -49,8 +53,9 @@ class CommandGrepTest {
         val filename = resDir + "doc6"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandGrep(listOf("-w", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n", sb.toString())
+        assertEquals("""|I've found frog
+                        |it's name froggy
+                        |""".trimMarginUni(), sb.toString())
     }
 
     @Test
@@ -61,10 +66,12 @@ class CommandGrepTest {
         val filename = resDir + "doc6"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandGrep(listOf("-i", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "froggygy\n" +
-                "FROG\n", sb.toString())
+        assertEquals("\r\n", System.getProperty("line.separator"))
+        assertEquals("""|I've found frog
+                        |it's name froggy
+                        |froggygy
+                        |FROG
+                        |""".trimMarginUni(), sb.toString())
     }
 
     @Test
@@ -75,9 +82,10 @@ class CommandGrepTest {
         val filename = resDir + "doc6"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandGrep(listOf("-w", "-i", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "FROG\n", sb.toString())
+        assertEquals("""|I've found frog
+                        |it's name froggy
+                        |FROG
+                        |""".trimMarginUni(), sb.toString())
     }
 
     @Test
@@ -88,13 +96,14 @@ class CommandGrepTest {
         val filename = resDir + "doc6"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandGrep(listOf("-A", "1", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "write in blog\n" +
-                "---\n" +
-                "froggygy\n" +
-                "fro g\n" +
-                "---\n", sb.toString())
+        assertEquals("""|I've found frog
+                        |it's name froggy
+                        |write in blog
+                        |---
+                        |froggygy
+                        |fro g
+                        |---
+                        |""".trimMarginUni(), sb.toString())
     }
 
     @Test
@@ -105,12 +114,13 @@ class CommandGrepTest {
         val filename = resDir + "doc6"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandGrep(listOf("-A", "1", "-i", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "write in blog\n" +
-                "---\n" +
-                "froggygy\n" +
-                "fro g\n" +
-                "FROG\n", sb.toString())
+        assertEquals("""|I've found frog
+                        |it's name froggy
+                        |write in blog
+                        |---
+                        |froggygy
+                        |fro g
+                        |FROG
+                        |""".trimMarginUni(), sb.toString())
     }
 }
