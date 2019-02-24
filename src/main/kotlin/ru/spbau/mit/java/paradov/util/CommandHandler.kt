@@ -49,7 +49,7 @@ fun runCommandAndArguments(shell: Shell, commandAndArguments: List<String>) {
         "exit" -> CommandExit(arguments, shell).run()
         else -> {
             if (command.contains("=")) {
-                CommandAssignment(arguments, shell).run()
+                CommandAssignment(command, arguments, shell).run()
             } else {
                 CommandProcess(command, arguments, shell).run()
             }
