@@ -7,7 +7,7 @@ plugins {
 group 'ru.spbau.mit.java.paradov'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.10
 
 repositories {
     mavenCentral()
@@ -33,6 +33,12 @@ sourceSets {
     generated{
         java.srcDir "${buildDir}/generated-src/antlr/main/"
     }
+}
+
+jar {
+    manifest { attributes 'Main-Class': 'ru.spbau.mit.java.paradov.MainKt' }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    baseName = 'cli'
 }
 
 compileKotlin {
