@@ -12,7 +12,7 @@ import java.lang.StringBuilder
 
 class CommandCatTest {
     private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
-    private val nl = System.lineSeparator()
+    private val lineSep = System.lineSeparator()
 
     @Test
     fun testCat1() {
@@ -22,7 +22,7 @@ class CommandCatTest {
         val filename = resDir + "doc1"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandCat(listOf(filename), shell).run()
-        assertEquals("abcdef$nl", sb.toString())
+        assertEquals("abcdef$lineSep", sb.toString())
     }
 
     @Test
@@ -33,7 +33,7 @@ class CommandCatTest {
         val filename = resDir + "doc2"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandCat(listOf(filename), shell).run()
-        assertEquals("Great Grey Wolf Jumped Over Lazy Bachelor${nl}Quack!$nl", sb.toString())
+        assertEquals("Great Grey Wolf Jumped Over Lazy Bachelor${lineSep}Quack!${lineSep}", sb.toString())
     }
 
     @Test
@@ -45,7 +45,9 @@ class CommandCatTest {
         val filename2 = resDir + "doc1"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandCat(listOf(filename1, filename2), shell).run()
-        assertEquals("Great Grey Wolf Jumped Over Lazy Bachelor${nl}Quack!${nl}abcdef$nl", sb.toString())
+        assertEquals("Great Grey Wolf Jumped Over Lazy Bachelor${lineSep}" +
+                "Quack!${lineSep}" +
+                "abcdef${lineSep}", sb.toString())
     }
 
     @Test
@@ -56,7 +58,21 @@ class CommandCatTest {
         val filename = resDir + "what doc"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandCat(listOf(filename), shell).run()
-        val expected = "cat: file $filename not found$nl"
+        val expected = "cat: file $filename not found${lineSep}"
+        assertEquals(expected, sb.toString())
+    }
+
+    @Test
+    fun testCat5() {
+        val shell = mockk<Shell>()
+        val sb = StringBuilder()
+        val slot = slot<String>()
+        val filename = resDir + "doc5"
+        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
+        CommandCat(listOf(filename), shell).run()
+        val expected = "ffffff${lineSep}" +
+                "ggggg${lineSep}" +
+                lineSep + lineSep + lineSep
         assertEquals(expected, sb.toString())
     }
 }

@@ -8,10 +8,10 @@ import org.junit.Assert.*
 import ru.spbau.mit.java.paradov.shell.Shell
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.nio.file.Paths
 
 class CommandProcessTest {
     private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
+    private val lineSep = System.lineSeparator()
 
     @Test
     fun testProcess() {
@@ -20,9 +20,8 @@ class CommandProcessTest {
 
         val outputStream = ByteArrayOutputStream()
         every { shell.outputStream } returns outputStream
-        every { shell.scope.currentDirectory} returns Paths.get(System.getProperty("user.dir"))
+        every { shell.scope.currentDirectory} returns System.getProperty("user.dir")
         CommandProcess("sort", listOf(filename), shell).run()
-        val nl = System.lineSeparator()
-        assertEquals("aaaa${nl}bbbb${nl}cccc${nl}", outputStream.toString())
+        assertEquals("aaaa${lineSep}bbbb${lineSep}cccc${lineSep}", outputStream.toString())
     }
 }

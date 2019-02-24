@@ -37,7 +37,7 @@ abstract class Shell {
 
     // Print function that writes given string to outputStream, but with linebreak at the end.
     fun println(s: String) {
-        print(s + "\n")
+        print(s + System.lineSeparator())
     }
 
     fun resolveDir(folder: String) : Path {
