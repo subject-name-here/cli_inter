@@ -4,5 +4,9 @@ install: true
 jdk:
   - openjdk10
 
+os:
+  - linux
+  - windows
+
 script:
   - ./gradlew test build
