@@ -11,6 +11,7 @@ import java.io.File
 
 class CommandProcessTest {
     private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
+    private val lineSep = System.lineSeparator()
 
     @Test
     fun testProcess() {
@@ -21,6 +22,6 @@ class CommandProcessTest {
         every { shell.outputStream } returns outputStream
         every { shell.scope.currentDirectory} returns System.getProperty("user.dir")
         CommandProcess("sort", listOf(filename), shell).run()
-        assertEquals("aaaa\nbbbb\ncccc\n", outputStream.toString())
+        assertEquals("aaaa${lineSep}bbbb${lineSep}cccc${lineSep}", outputStream.toString())
     }
 }

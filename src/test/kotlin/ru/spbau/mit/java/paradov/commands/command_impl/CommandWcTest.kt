@@ -12,6 +12,7 @@ import java.lang.StringBuilder
 
 class CommandWcTest {
     private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
+    private val lineSep = System.lineSeparator()
 
     @Test
     fun testWc1() {
@@ -21,7 +22,7 @@ class CommandWcTest {
         val filename = resDir + "doc1"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandWc(listOf(filename), shell).run()
-        assertEquals("1 1 6${CommandWc.splitter}$filename\n", sb.toString())
+        assertEquals("1 1 6${CommandWc.splitter}$filename$lineSep", sb.toString())
     }
 
     @Test
@@ -32,7 +33,7 @@ class CommandWcTest {
         val filename = resDir + "doc2"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandWc(listOf(filename), shell).run()
-        assertEquals("2 8 48${CommandWc.splitter}$filename\n", sb.toString())
+        assertEquals("2 8 48${CommandWc.splitter}$filename$lineSep", sb.toString())
     }
 
     @Test
@@ -44,9 +45,9 @@ class CommandWcTest {
         val filename2 = resDir + "doc3.2"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandWc(listOf(filename1, filename2), shell).run()
-        val expected = "3 5 27${CommandWc.splitter}$filename1\n" +
-                "4 6 25${CommandWc.splitter}$filename2\n" +
-                "Total: 7 11 52\n"
+        val expected = "3 5 27${CommandWc.splitter}$filename1$lineSep" +
+                "4 6 25${CommandWc.splitter}$filename2$lineSep" +
+                "Total: 7 11 52$lineSep"
         assertEquals(expected, sb.toString())
     }
 
@@ -58,7 +59,7 @@ class CommandWcTest {
         val filename = resDir + "what doc"
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandWc(listOf(filename), shell).run()
-        val expected = "wc: file $filename not found\n"
+        val expected = "wc: file $filename not found$lineSep"
         assertEquals(expected, sb.toString())
     }
 }
