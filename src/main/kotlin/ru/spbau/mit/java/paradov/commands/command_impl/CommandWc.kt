@@ -5,10 +5,9 @@ import ru.spbau.mit.java.paradov.shell.Shell
 import ru.spbau.mit.java.paradov.util.splitBySpaces
 import java.io.File
 import java.io.FileNotFoundException
-import java.util.*
 
 /**
- * Command that counts words, lines and bytes in given file/files.
+ * Command that counts words, lines (actually, not lines but linebreaks) and bytes in given file/files.
  */
 class CommandWc(args: List<String>, shell: Shell) : Command(args, shell) {
     companion object {
@@ -16,7 +15,7 @@ class CommandWc(args: List<String>, shell: Shell) : Command(args, shell) {
     }
 
     private class WordCountResult {
-        var bytes: Long = 0
+        var bytes: Int = 0
         var words: Int = 0
         var lines: Int = 0
 
@@ -31,33 +30,30 @@ class CommandWc(args: List<String>, shell: Shell) : Command(args, shell) {
         }
     }
 
+    private fun stringToWcResult(s: String): WordCountResult {
+        val wcResult = WordCountResult()
+        wcResult.lines = s.split(System.lineSeparator().toRegex()).size - 1
+        wcResult.words = s.splitBySpaces().size
+        wcResult.bytes = s.length
+        return wcResult
+    }
+
     override fun run() {
         if (args.isEmpty()) {
-            val scanner = Scanner(shell.inputStream)
-            val wcResult = WordCountResult()
-            while (scanner.hasNext()) {
-                val line = scanner.nextLine()
-                wcResult.lines += 1
-                wcResult.words += line.splitBySpaces().size
-                wcResult.bytes += line.length
-            }
+            val content = String(shell.inputStream.readAllBytes())
+            val wcResult = stringToWcResult(content)
             shell.println("$wcResult")
         } else {
             val wcTotal = WordCountResult()
             for (arg in args) {
                 try {
-                    val f = File(arg)
-                    val wcLocal = WordCountResult()
-                    wcLocal.bytes = f.length()
-                    f.forEachLine {
-                        wcLocal.lines += 1
-                        wcLocal.words += it.splitBySpaces().size
-                    }
+                    val content = File(arg).readText()
+                    val wcLocal = stringToWcResult(content)
 
                     shell.println("$wcLocal$splitter$arg")
                     wcTotal.add(wcLocal)
                 } catch (e: FileNotFoundException) {
-                    shell.println("wc: file $arg not found")
+                    shell.printlnError("wc: file $arg not found")
                 }
             }
             if (args.size > 1)

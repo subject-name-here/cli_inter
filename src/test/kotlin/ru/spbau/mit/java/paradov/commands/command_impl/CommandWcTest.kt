@@ -6,23 +6,33 @@ import io.mockk.slot
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
+import ru.spbau.mit.java.paradov.createTempFileWithContent
 import ru.spbau.mit.java.paradov.shell.Shell
-import java.io.File
 import java.lang.StringBuilder
 
 class CommandWcTest {
-    private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
     private val lineSep = System.lineSeparator()
+
+    /** Temporary folder for files. */
+    @Rule
+    @JvmField
+    val folder = TemporaryFolder()
 
     @Test
     fun testWc1() {
         val shell = mockk<Shell>()
         val sb = StringBuilder()
         val slot = slot<String>()
-        val filename = resDir + "doc1"
+
+        val filename = "res1"
+        val content = "abcdef$lineSep"
+        val name = createTempFileWithContent(folder, filename, content).canonicalPath
+
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandWc(listOf(filename), shell).run()
-        assertEquals("1 1 6${CommandWc.splitter}$filename$lineSep", sb.toString())
+        CommandWc(listOf(name), shell).run()
+        assertEquals("1 1 ${content.length}${CommandWc.splitter}$name$lineSep", sb.toString())
     }
 
     @Test
@@ -30,10 +40,14 @@ class CommandWcTest {
         val shell = mockk<Shell>()
         val sb = StringBuilder()
         val slot = slot<String>()
-        val filename = resDir + "doc2"
+
+        val filename = "res2"
+        val content = "Great Grey Wolf Jumped Over Lazy Bachelor${lineSep}Quack!"
+        val name = createTempFileWithContent(folder, filename, content).canonicalPath
+
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandWc(listOf(filename), shell).run()
-        assertEquals("2 8 48${CommandWc.splitter}$filename$lineSep", sb.toString())
+        CommandWc(listOf(name), shell).run()
+        assertEquals("1 8 ${content.length}${CommandWc.splitter}$name$lineSep", sb.toString())
     }
 
     @Test
@@ -41,13 +55,20 @@ class CommandWcTest {
         val shell = mockk<Shell>()
         val sb = StringBuilder()
         val slot = slot<String>()
-        val filename1 = resDir + "doc3.1"
-        val filename2 = resDir + "doc3.2"
+
+        val filename1 = "res3.1"
+        val content1 = "golden girl${lineSep}great gun${lineSep}grace${lineSep}"
+        val name1 = createTempFileWithContent(folder, filename1, content1).canonicalPath
+
+        val filename2 = "res3.2"
+        val content2 = "far few fall${lineSep}free${lineSep}press${lineSep}f"
+        val name2 = createTempFileWithContent(folder, filename2, content2).canonicalPath
+
         every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandWc(listOf(filename1, filename2), shell).run()
-        val expected = "3 5 27${CommandWc.splitter}$filename1$lineSep" +
-                "4 6 25${CommandWc.splitter}$filename2$lineSep" +
-                "Total: 7 11 52$lineSep"
+        CommandWc(listOf(name1, name2), shell).run()
+        val expected = "3 5 ${content1.length}${CommandWc.splitter}$name1$lineSep" +
+                "3 6 ${content2.length}${CommandWc.splitter}$name2$lineSep" +
+                "Total: 6 11 ${content1.length + content2.length}$lineSep"
         assertEquals(expected, sb.toString())
     }
 
@@ -56,8 +77,8 @@ class CommandWcTest {
         val shell = mockk<Shell>()
         val sb = StringBuilder()
         val slot = slot<String>()
-        val filename = resDir + "what doc"
-        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
+        val filename = "nonexistent doc"
+        every { shell.printlnError(capture(slot)) } answers { sb.appendln(slot.captured) }
         CommandWc(listOf(filename), shell).run()
         val expected = "wc: file $filename not found$lineSep"
         assertEquals(expected, sb.toString())
