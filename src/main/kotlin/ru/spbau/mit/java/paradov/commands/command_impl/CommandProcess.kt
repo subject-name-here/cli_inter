@@ -18,8 +18,7 @@ class CommandProcess(private val command: String, args: List<String>, shell: She
         val process = pb.start()
         process.inputStream.transferTo(shell.outputStream)
 
-        process.waitFor()
-        val code = process.exitValue()
+        val code = process.waitFor()
         if (code != 0) {
             shell.printlnError("process: non-zero exit value: $code")
             process.errorStream.transferTo(shell.errorStream)
