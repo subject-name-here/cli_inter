@@ -1,16 +1,24 @@
 package ru.spbau.mit.java.paradov.shell
 
-import ru.spbau.mit.java.paradov.pipeline_handler.stringToPipeline
+import ru.spbau.mit.java.paradov.commands.CommandCreator
+import ru.spbau.mit.java.paradov.parser.StringParser
+import ru.spbau.mit.java.paradov.pipeline_handler.PipelineCreator
 import ru.spbau.mit.java.paradov.scope.Scope
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.io.OutputStream
 
 /**
  * Shell implementation for the main shell that user sees and interacts with.
  */
-class MainShell : Shell() {
+class MainShell(
+    private val pipelineCreator: PipelineCreator,
+    val parser: StringParser,
+    val commandCreator: CommandCreator
+) : Shell() {
     override val inputStream = DataInputStream(System.`in`)
     override val outputStream = DataOutputStream(System.out)
+    override val errorStream: OutputStream = DataOutputStream(System.out)
     override val scope: Scope = Scope()
 
     override var isStopped = false
@@ -31,10 +39,10 @@ class MainShell : Shell() {
             val line = readLine() ?: break
 
             try {
-                val pipeline = stringToPipeline(line)
+                val pipeline = pipelineCreator.stringToPipeline(this, line)
                 pipeline.run(this)
             } catch (e: Exception) {
-                println(":( $e" )
+                printlnError(":( $e" )
             }
         } while (!isStopped)
 
