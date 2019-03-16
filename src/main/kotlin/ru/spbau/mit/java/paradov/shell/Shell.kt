@@ -24,6 +24,11 @@ abstract class Shell {
     abstract val outputStream: OutputStream
 
     /**
+     * Stream where all errors are written to.
+     */
+    abstract val errorStream: OutputStream
+
+    /**
      * Flag if shell is stopped or not.
      */
     abstract var isStopped: Boolean
@@ -35,6 +40,11 @@ abstract class Shell {
 
     // Print function that writes given string to outputStream, but with linebreak at the end.
     fun println(s: String) {
-        print(s + "\n")
+        print(s + System.lineSeparator())
+    }
+
+    // Function that prints error (with linebreak) in special stream for errors.
+    fun printlnError(s: String) {
+        errorStream.write((s + System.lineSeparator()).toByteArray())
     }
 }

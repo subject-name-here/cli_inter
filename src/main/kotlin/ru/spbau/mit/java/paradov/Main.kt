@@ -1,5 +1,8 @@
 package ru.spbau.mit.java.paradov
 
+import ru.spbau.mit.java.paradov.commands.CommandCreatorImpl
+import ru.spbau.mit.java.paradov.parser.StringParserImpl
+import ru.spbau.mit.java.paradov.pipeline_handler.PipelineCreatorImpl
 import ru.spbau.mit.java.paradov.shell.MainShell
 
 /**
@@ -7,6 +10,6 @@ import ru.spbau.mit.java.paradov.shell.MainShell
  */
 fun main() {
     println("Hello there!")
-    val mainShell = MainShell()
+    val mainShell = MainShell(PipelineCreatorImpl(), StringParserImpl(), CommandCreatorImpl())
     mainShell.start()
 }
