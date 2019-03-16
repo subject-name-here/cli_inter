@@ -4,7 +4,7 @@ package ru.spbau.mit.java.paradov.scope
  * Class that wraps variables map. It also has current directory as special variable.
  */
 class Scope() {
-    val variables: HashMap<String, String> = HashMap()
+    private val variables: HashMap<String, String> = HashMap()
 
     var currentDirectory = ""
 
