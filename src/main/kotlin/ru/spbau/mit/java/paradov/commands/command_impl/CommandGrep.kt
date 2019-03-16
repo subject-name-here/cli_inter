@@ -37,6 +37,14 @@ class CommandGrep(args: List<String>, shell: Shell) : Command(args, shell) {
         if (argsParsed.targets.isEmpty()) {
             throw Exception("grep: expected regex!")
         }
+
+        val unmatchedKeys = getUnmatchedKeys(argsParsed.targets)
+        if (unmatchedKeys.isNotEmpty()) {
+            shell.printlnError("grep: unknown key${if (unmatchedKeys.size == 1) "" else "s"} "
+                    + unmatchedKeys.joinToString())
+            return
+        }
+
         val regex = createRegexFromParsedArgs(argsParsed)
         val files = argsParsed.targets.drop(1)
 
@@ -99,5 +107,20 @@ class CommandGrep(args: List<String>, shell: Shell) : Command(args, shell) {
         }
 
         return regexString.toRegex(regexOptions)
+    }
+
+    private fun getUnmatchedKeys(args: List<String>): List<String> {
+        val unmatchedKeys = ArrayList<String>()
+
+        for (arg in args) {
+            if (arg.startsWith("-")) {
+                unmatchedKeys.add(arg)
+            }
+
+            if (arg == "--")
+                break
+        }
+
+        return unmatchedKeys
     }
 }
