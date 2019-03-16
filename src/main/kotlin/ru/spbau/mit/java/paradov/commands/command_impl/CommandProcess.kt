@@ -9,7 +9,7 @@ import java.io.File
  */
 class CommandProcess(private val command: String, args: List<String>, shell: Shell) : Command(args, shell) {
     override fun run() {
-        val pb = ProcessBuilder(listOf(command) + args)
+        val pb = ProcessBuilder(osHandler(command, args))
         pb.directory(File(shell.scope.currentDirectory))
         pb.redirectOutput(ProcessBuilder.Redirect.PIPE)
         pb.redirectInput(ProcessBuilder.Redirect.PIPE)
@@ -22,6 +22,14 @@ class CommandProcess(private val command: String, args: List<String>, shell: She
         if (code != 0) {
             shell.printlnError("process: non-zero exit value: $code")
             process.errorStream.transferTo(shell.errorStream)
+        }
+    }
+
+    private fun osHandler(command: String, args: List<String>): List<String> {
+        return if (System.getProperty("os.name").startsWith("Windows")) {
+            listOf("cmd", "/c", command) + args
+        } else {
+            listOf(command) + args
         }
     }
 }
