@@ -10,7 +10,6 @@ import org.junit.rules.TemporaryFolder
 import ru.spbau.mit.java.paradov.createTempFileWithContent
 import ru.spbau.mit.java.paradov.shell.Shell
 import java.io.ByteArrayOutputStream
-import java.io.File
 
 class CommandProcessTest {
     private val lineSep = System.lineSeparator()
@@ -29,7 +28,7 @@ class CommandProcessTest {
 
         val outputStream = ByteArrayOutputStream()
         every { shell.outputStream } returns outputStream
-        every { shell.scope.currentDirectory} returns System.getProperty("user.dir")
+        every { shell.scope.currentDirectory } returns System.getProperty("user.dir")
 
         CommandProcess("sort", listOf(name), shell).run()
         assertEquals("aaaa${lineSep}bbbb${lineSep}cccc$lineSep", outputStream.toString())

@@ -57,7 +57,7 @@ class CommandWcTest {
         val slot = slot<String>()
 
         val filename1 = "res3.1"
-        val content1 = "golden girl${lineSep}great gun${lineSep}grace${lineSep}"
+        val content1 = "golden girl${lineSep}great gun${lineSep}grace$lineSep"
         val name1 = createTempFileWithContent(folder, filename1, content1).canonicalPath
 
         val filename2 = "res3.2"
