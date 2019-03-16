@@ -6,111 +6,37 @@ import io.mockk.slot
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
+import ru.spbau.mit.java.paradov.createTempFileWithContent
 import ru.spbau.mit.java.paradov.shell.Shell
 import java.io.File
 import java.lang.StringBuilder
 
 class CommandGrepTest {
 
-    private val resDir = "src${File.separator}test${File.separator}resources${File.separator}"
+    private val lineSep = System.lineSeparator()
 
-    @Test
+    /** Temporary folder for files. */
+    @Rule
+    @JvmField
+    val folder = TemporaryFolder()
+
+    /*@Test
     fun testGrep1() {
         val shell = mockk<Shell>()
         val sb = StringBuilder()
         val slot = slot<String>()
-        val filename = resDir + "doc6"
-        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandGrep(listOf("qq", filename), shell).run()
-        assertEquals("there's qq\n" +
-                "another qq\n" +
-                "qq\n" +
-                "last qq\n", sb.toString())
-    }
 
-    @Test
-    fun testGrep2() {
-        val shell = mockk<Shell>()
-        val sb = StringBuilder()
-        val slot = slot<String>()
-        val filename = resDir + "doc6"
-        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandGrep(listOf("frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "froggygy\n", sb.toString())
-    }
+        val filename = "res1"
+        val content = "abcdef$lineSep"
+        val name = createTempFileWithContent(folder, filename, content).canonicalPath
 
-    @Test
-    fun testGrep3() {
-        val shell = mockk<Shell>()
-        val sb = StringBuilder()
-        val slot = slot<String>()
-        val filename = resDir + "doc6"
-        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandGrep(listOf("-w", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n", sb.toString())
-    }
+        every { shell.print(capture(slot)) } answers { sb.append(slot.captured) }
+        CommandCat(listOf(name), shell).run()
+        assertEquals(content, sb.toString())
+    }*/
+    // TODO: add tests
 
-    @Test
-    fun testGrep4() {
-        val shell = mockk<Shell>()
-        val sb = StringBuilder()
-        val slot = slot<String>()
-        val filename = resDir + "doc6"
-        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandGrep(listOf("-i", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "froggygy\n" +
-                "FROG\n", sb.toString())
-    }
 
-    @Test
-    fun testGrep5() {
-        val shell = mockk<Shell>()
-        val sb = StringBuilder()
-        val slot = slot<String>()
-        val filename = resDir + "doc6"
-        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandGrep(listOf("-w", "-i", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "FROG\n", sb.toString())
-    }
-
-    @Test
-    fun testGrep6() {
-        val shell = mockk<Shell>()
-        val sb = StringBuilder()
-        val slot = slot<String>()
-        val filename = resDir + "doc6"
-        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandGrep(listOf("-A", "1", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "write in blog\n" +
-                "---\n" +
-                "froggygy\n" +
-                "fro g\n" +
-                "---\n", sb.toString())
-    }
-
-    @Test
-    fun testGrep7() {
-        val shell = mockk<Shell>()
-        val sb = StringBuilder()
-        val slot = slot<String>()
-        val filename = resDir + "doc6"
-        every { shell.println(capture(slot)) } answers { sb.appendln(slot.captured) }
-        CommandGrep(listOf("-A", "1", "-i", "frog(gy)?", filename), shell).run()
-        assertEquals("I've found frog\n" +
-                "it's name froggy\n" +
-                "write in blog\n" +
-                "---\n" +
-                "froggygy\n" +
-                "fro g\n" +
-                "FROG\n", sb.toString())
-    }
 }

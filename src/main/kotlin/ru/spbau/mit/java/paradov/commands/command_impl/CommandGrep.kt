@@ -1,11 +1,9 @@
 package ru.spbau.mit.java.paradov.commands.command_impl
 
-import com.beust.jcommander.IParameterValidator
 import com.beust.jcommander.Parameter
 import ru.spbau.mit.java.paradov.commands.Command
 import ru.spbau.mit.java.paradov.shell.Shell
 import com.beust.jcommander.JCommander
-import com.beust.jcommander.ParameterException
 import com.beust.jcommander.validators.PositiveInteger
 import java.io.File
 import java.io.FileNotFoundException
