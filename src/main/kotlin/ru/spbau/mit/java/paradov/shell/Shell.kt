@@ -3,7 +3,6 @@ package ru.spbau.mit.java.paradov.shell
 import ru.spbau.mit.java.paradov.scope.Scope
 import java.io.InputStream
 import java.io.OutputStream
-import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
@@ -50,11 +49,5 @@ abstract class Shell {
         errorStream.write((s + System.lineSeparator()).toByteArray())
     }
 
-    fun resolveDir(folder: String) : Path {
-        var dir = Paths.get(folder);
-        if (!dir.isAbsolute) {
-            dir = scope.currentDirectory.resolve(dir)
-        }
-        return dir.normalize()
-    }
+    fun resolveDir(folder: String) = scope.currentDirectory.resolve(Paths.get(folder)).normalize()!!
 }

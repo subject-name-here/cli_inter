@@ -3,7 +3,6 @@ package ru.spbau.mit.java.paradov.commands.command_impl
 import ru.spbau.mit.java.paradov.commands.Command
 import ru.spbau.mit.java.paradov.shell.Shell
 import ru.spbau.mit.java.paradov.util.splitBySpaces
-import java.io.File
 import java.io.FileNotFoundException
 
 /**
@@ -47,7 +46,7 @@ class CommandWc(args: List<String>, shell: Shell) : Command(args, shell) {
             val wcTotal = WordCountResult()
             for (arg in args) {
                 try {
-                    val content = File(arg).readText()
+                    val content = shell.resolveDir(arg).toFile().readText()
                     val wcLocal = stringToWcResult(content)
 
                     shell.println("$wcLocal$splitter$arg")

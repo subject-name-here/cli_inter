@@ -2,7 +2,6 @@ package ru.spbau.mit.java.paradov.commands.command_impl
 
 import ru.spbau.mit.java.paradov.commands.Command
 import ru.spbau.mit.java.paradov.shell.Shell
-import java.io.File
 
 /**
  * Command implementation that executes given command as external process.
@@ -10,7 +9,7 @@ import java.io.File
 class CommandProcess(private val command: String, args: List<String>, shell: Shell) : Command(args, shell) {
     override fun run() {
         val pb = ProcessBuilder(osHandler(command, args))
-        pb.directory(File(shell.scope.currentDirectory))
+        pb.directory(shell.scope.currentDirectory.toFile())
         pb.redirectOutput(ProcessBuilder.Redirect.PIPE)
         pb.redirectInput(ProcessBuilder.Redirect.PIPE)
         pb.redirectError(ProcessBuilder.Redirect.PIPE)

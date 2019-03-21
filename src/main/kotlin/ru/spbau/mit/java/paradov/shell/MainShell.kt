@@ -7,6 +7,7 @@ import ru.spbau.mit.java.paradov.scope.Scope
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.OutputStream
+import java.nio.file.Paths
 
 /**
  * Shell implementation for the main shell that user sees and interacts with.
@@ -32,7 +33,7 @@ class MainShell(
      * - exit, if command said so
      */
     fun start() {
-        scope.currentDirectory = System.getProperty("user.dir")
+        scope.currentDirectory = Paths.get(System.getProperty("user.dir"))
 
         do {
             print(scope.currentDirectory + " :) ")

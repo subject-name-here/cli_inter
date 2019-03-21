@@ -12,12 +12,14 @@ class CommandLs(args: List<String>, shell: Shell) : Command(args, shell) {
         } else {
             args.forEach {
                 val dir = shell.resolveDir(it)
-                if (Files.exists(dir)) {
+                if (!Files.exists(dir)) {
+                    shell.printlnError("ls: $it does not exists")
+                } else if (!Files.isDirectory(dir)) {
+                    shell.printlnError("ls: $it not a directory")
+                } else {
                     shell.println("$it:")
                     printDir(dir)
                     shell.println("")
-                } else {
-                    shell.println("$it does not exists")
                 }
             }
         }

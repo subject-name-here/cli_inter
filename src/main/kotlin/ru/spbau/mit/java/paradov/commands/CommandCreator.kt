@@ -23,6 +23,9 @@ class CommandCreatorImpl : CommandCreator {
             "cat" -> CommandCat(arguments, shell)
             "wc" -> CommandWc(arguments, shell)
             "pwd" -> CommandPwd(arguments, shell)
+            "cd" -> CommandCd(arguments, shell)
+            "ls" -> CommandLs(arguments, shell)
+            "grep" -> CommandGrep(arguments, shell)
             "exit" -> CommandExit(arguments, shell)
             else -> {
                 if (command.contains("=")) {
