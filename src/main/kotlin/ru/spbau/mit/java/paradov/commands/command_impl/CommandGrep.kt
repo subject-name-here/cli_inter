@@ -17,7 +17,7 @@ import kotlin.collections.HashSet
 class CommandGrep(args: List<String>, shell: Shell) : Command(args, shell) {
     private class ArgsParsed {
         @Parameter
-        var targets: List<String> = listOf()
+        var targets: List<String> = mutableListOf()
 
         @Parameter(names = ["-w"], description = "Search by words")
         var wordsSearch = false

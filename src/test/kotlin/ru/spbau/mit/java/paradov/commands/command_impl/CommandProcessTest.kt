@@ -2,6 +2,7 @@ package ru.spbau.mit.java.paradov.commands.command_impl
 
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -25,10 +26,12 @@ class CommandProcessTest {
         val filename = "doc1"
         val content = "bbbb${lineSep}cccc${lineSep}aaaa$lineSep"
         val name = createTempFileWithContent(folder, filename, content).canonicalPath
+        val slot = slot<String>()
 
         val outputStream = ByteArrayOutputStream()
         every { shell.outputStream } returns outputStream
         every { shell.scope.currentDirectory } returns Paths.get(System.getProperty("user.dir"))
+        every { shell.printlnError(capture(slot))} answers {}
 
         CommandProcess("sort", listOf(name), shell).run()
         assertEquals("aaaa${lineSep}bbbb${lineSep}cccc$lineSep", outputStream.toString())

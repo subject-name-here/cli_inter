@@ -3,6 +3,7 @@ package ru.spbau.mit.java.paradov.shell
 import ru.spbau.mit.java.paradov.scope.Scope
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
