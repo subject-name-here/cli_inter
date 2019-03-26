@@ -5,6 +5,9 @@ import ru.spbau.mit.java.paradov.shell.Shell
 import java.nio.file.Files
 import java.nio.file.Path
 
+/**
+ * Command that prints content of given folder/folders.
+ */
 class CommandLs(args: List<String>, shell: Shell) : Command(args, shell) {
     override fun run() {
         if (args.isEmpty()) {

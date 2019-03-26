@@ -50,5 +50,6 @@ abstract class Shell {
         errorStream.write((s + System.lineSeparator()).toByteArray())
     }
 
+    // Function that gives path resolved by using current directory
     fun resolveDir(folder: String) = scope.currentDirectory.resolve(Paths.get(folder)).normalize()!!
 }

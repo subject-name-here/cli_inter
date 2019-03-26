@@ -5,6 +5,9 @@ import ru.spbau.mit.java.paradov.shell.Shell
 import java.nio.file.Files
 import java.nio.file.Paths
 
+/**
+ * Command that change current directory
+ */
 class CommandCd(args: List<String>, shell: Shell) : Command(args, shell) {
     override fun run() {
         if (args.size > 1) {
